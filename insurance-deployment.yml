@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-deployment
+  labels:
+    app: insurance
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: insurance
+
+  template:
+    metadata:
+      labels:
+        app: insurance
+
+    spec:
+      containers:
+        - name: insurance-container
+          image: trainerreyaz/insurance-image:latest
+
+          ports:
+            - containerPort: 80
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 2
+
+          startupProbe:
+            httpGet:
+              path: /
+              port: 80
+            failureThreshold: 30
+            periodSeconds: 10
